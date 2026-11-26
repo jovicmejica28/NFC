@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <!-- ============ META ============ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Jovic S. Mejica — BSIT Student and Web System Developer. Contact me for web system development, custom websites, and system enhancements." />
+  <meta name="theme-color" content="#020617" />
+  <title>Jovic S. Mejica | Web System Developer</title>
+
+  <!-- ============ FONTS (Poppins) ============ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- ============ FONT AWESOME ============ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- ============ TAILWIND CSS ============ -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+
+  <!-- ============ CUSTOM STYLES ============ -->
+  <style>
+    /* Scroll-reveal: hidden until JS adds .is-visible */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* TikTok's signature cyan/pink "glitch" look on the icon */
+    .tiktok-icon {
+      text-shadow: -2px -2px 0 #25F4EE, 2px 2px 0 #FE2C55;
+    }
+
+    /* Instagram brand gradient */
+    .bg-instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    /* Respect users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      * { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 font-sans text-slate-100 antialiased">
+
+  <!-- Decorative background glows (purely visual) -->
+  <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-3xl"></div>
+    <div class="absolute bottom-0 -right-20 h-72 w-72 rounded-full bg-blue-600/10 blur-3xl"></div>
+  </div>
+
+  <main class="mx-auto w-full max-w-md px-5 pb-10 pt-12">
+
+    <!-- ================================================= -->
+    <!-- SECTION 1: HERO / PROFILE                          -->
+    <!-- ================================================= -->
+    <section class="reveal text-center" aria-labelledby="profile-name">
+      <!-- Full profile photo with glowing gradient border -->
+      <div class="mx-auto w-full rounded-3xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-cyan-400 p-[3px] shadow-[0_0_40px_rgba(34,211,238,0.35)]">
+        <div class="overflow-hidden rounded-[calc(1.5rem-3px)] bg-slate-900">
+          <!-- Photo shown uncropped (falls back to initials if profile.jpg is missing) -->
+          <img
+            src="profile.jpg"
+            alt="Jovic S. Mejica standing beside a pool table holding a cue"
+            class="block h-auto w-full"
+            width="502" height="504"
+            fetchpriority="high"
+            onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+          />
+          <span aria-hidden="true" class="hidden flex aspect-square w-full items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-6xl font-semibold text-cyan-300">JM</span>
+        </div>
+      </div>
+
+      <h1 id="profile-name" class="mt-6 text-3xl font-bold tracking-tight text-white">Jovic S. Mejica</h1>
+      <p class="mt-1 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-sm font-medium text-transparent">
+        BSIT Student | Web System Developer
+      </p>
+      <p class="mt-4 text-sm leading-relaxed text-slate-400">
+        For web system development inquiries, project proposals, custom website creation, or system enhancements, feel free to contact me. I'm always open to discussing your ideas and helping you find the right digital solution.
+      </p>
+
+      <!-- Save Contact (vCard download) -->
+      <button
+        id="save-contact"
+        type="button"
+        aria-label="Save Jovic S. Mejica to your contacts"
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:scale-105 hover:shadow-cyan-400/50 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+      >
+        <i class="fa-solid fa-address-book" aria-hidden="true"></i>
+        Save Contact
+      </button>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- SECTION 2: CONTACT INFO                            -->
+    <!-- ================================================= -->
+    <section class="reveal mt-10 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2" aria-label="Contact information">
+      <!-- Phone card -->
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+        </div>
+        <p class="mt-3 text-xs uppercase tracking-wider text-slate-400">Phone</p>
+        <p class="mt-0.5 text-sm font-medium text-white">09948038429</p>
+      </div>
+
+      <!-- Email card -->
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        </div>
+        <p class="mt-3 text-xs uppercase tracking-wider text-slate-400">Email Address</p>
+        <p class="mt-0.5 break-all text-sm font-medium text-white">mejicajovic1111@gmail.com</p>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- SECTION 3: QUICK ACTION BUTTONS                    -->
+    <!-- ================================================= -->
+    <section class="reveal mt-10" aria-labelledby="quick-actions">
+      <h2 id="quick-actions" class="mb-4 text-center text-lg font-semibold text-white">Get in touch</h2>
+      <div class="space-y-3">
+        <!-- Call -->
+        <a href="tel:+639948038429"
+           aria-label="Call Jovic at +63 994 803 8429"
+           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:bg-cyan-400/10 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-slate-950">
+            <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
+          </span>
+          <span class="flex-1">
+            <span class="block font-semibold text-white">Call Me</span>
+            <span class="block text-xs text-slate-400">+63 994 803 8429</span>
+          </span>
+          <i class="fa-solid fa-chevron-right text-slate-500 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
+        </a>
+
+        <!-- SMS -->
+        <a href="sms:+639948038429"
+           aria-label="Send a text message to Jovic"
+           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:bg-cyan-400/10 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-slate-950">
+            <i class="fa-solid fa-comment-sms" aria-hidden="true"></i>
+          </span>
+          <span class="flex-1">
+            <span class="block font-semibold text-white">Text / SMS</span>
+            <span class="block text-xs text-slate-400">Send me a message</span>
+          </span>
+          <i class="fa-solid fa-chevron-right text-slate-500 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
+        </a>
+
+        <!-- Email -->
+        <a href="mailto:mejicajovic1111@gmail.com?subject=Web%20System%20Inquiry"
+           aria-label="Send an email to Jovic"
+           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:bg-cyan-400/10 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-slate-950">
+            <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
+          </span>
+          <span class="flex-1">
+            <span class="block font-semibold text-white">Send Email</span>
+            <span class="block text-xs text-slate-400">Web System Inquiry</span>
+          </span>
+          <i class="fa-solid fa-chevron-right text-slate-500 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- SECTION 4: SOCIAL MEDIA LINKS                      -->
+    <!-- ================================================= -->
+    <section class="reveal mt-10" aria-labelledby="connect-heading">
+      <h2 id="connect-heading" class="mb-4 text-center text-lg font-semibold text-white">Connect with me</h2>
+      <div class="space-y-3">
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/jovicmejica28" target="_blank" rel="noopener noreferrer"
+           aria-label="Visit Jovic's Facebook profile (opens in a new tab)"
+           class="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1877F2] p-4 font-semibold text-white shadow-lg shadow-[#1877F2]/20 transition duration-200 hover:scale-[1.02] hover:brightness-110 hover:shadow-[#1877F2]/50 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+          <i class="fa-brands fa-facebook-f text-lg" aria-hidden="true"></i>
+          Facebook
+        </a>
+
+        <!-- TikTok -->
+        <a href="https://www.tiktok.com/@uqiouu" target="_blank" rel="noopener noreferrer"
+           aria-label="Visit Jovic's TikTok profile (opens in a new tab)"
+           class="flex w-full items-center justify-center gap-3 rounded-2xl border border-white/15 bg-black p-4 font-semibold text-white shadow-lg shadow-black/40 transition duration-200 hover:scale-[1.02] hover:border-[#25F4EE]/60 hover:shadow-[0_0_24px_rgba(254,44,85,0.35)] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25F4EE]">
+          <i class="fa-brands fa-tiktok tiktok-icon text-lg" aria-hidden="true"></i>
+          TikTok
+        </a>
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/uqiouu/" target="_blank" rel="noopener noreferrer"
+           aria-label="Visit Jovic's Instagram profile (opens in a new tab)"
+           class="bg-instagram flex w-full items-center justify-center gap-3 rounded-2xl p-4 font-semibold text-white shadow-lg shadow-pink-600/20 transition duration-200 hover:scale-[1.02] hover:brightness-110 hover:shadow-pink-500/50 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+          <i class="fa-brands fa-instagram text-lg" aria-hidden="true"></i>
+          Instagram
+        </a>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- FOOTER                                             -->
+    <!-- ================================================= -->
+    <footer class="mt-12 text-center text-xs text-slate-500">
+      &copy; 2026 Jovic S. Mejica. All rights reserved.
+    </footer>
+  </main>
+
+  <!-- Floating back-to-top button (hidden until the user scrolls) -->
+  <button
+    id="back-to-top"
+    type="button"
+    aria-label="Back to top"
+    class="pointer-events-none fixed bottom-5 right-5 flex h-12 w-12 translate-y-4 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-slate-950 opacity-0 shadow-lg shadow-cyan-500/30 transition duration-300 hover:scale-110 hover:shadow-cyan-400/60 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+  >
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <!-- Toast shown after the vCard downloads -->
+  <div id="toast" role="status" aria-live="polite"
+       class="pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-slate-800/90 px-4 py-2 text-sm text-white opacity-0 shadow-lg backdrop-blur transition duration-300">
+  </div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    (function () {
+      /* ---------- 1. Scroll-reveal animations ---------- */
+      const revealEls = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target); // animate once
+            }
+          });
+        }, { threshold: 0.12 });
+        revealEls.forEach((el) => observer.observe(el));
+      } else {
+        // Old browsers: just show everything
+        revealEls.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      /* ---------- 2. vCard download ("Save Contact") ---------- */
+      const contact = {
+        firstName: 'Jovic',
+        middle: 'S.',
+        lastName: 'Mejica',
+        title: 'BSIT Student | Web System Developer',
+        phone: '+639948038429',
+        email: 'mejicajovic1111@gmail.com',
+        url: 'https://www.facebook.com/jovicmejica28',
+      };
+
+      function buildVCard(c) {
+        // vCard 3.0 is the most widely supported format (iOS + Android)
+        return [
+          'BEGIN:VCARD',
+          'VERSION:3.0',
+          `N:${c.lastName};${c.firstName};${c.middle};;`,
+          `FN:${c.firstName} ${c.middle} ${c.lastName}`,
+          `TITLE:${c.title}`,
+          `TEL;TYPE=CELL,VOICE:${c.phone}`,
+          `EMAIL;TYPE=INTERNET:${c.email}`,
+          `URL:${c.url}`,
+          'END:VCARD',
+        ].join('\r\n');
+      }
+
+      const toast = document.getElementById('toast');
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.remove('opacity-0');
+        clearTimeout(showToast.t);
+        showToast.t = setTimeout(() => toast.classList.add('opacity-0'), 2500);
+      }
+
+      document.getElementById('save-contact').addEventListener('click', () => {
+        const blob = new Blob([buildVCard(contact)], { type: 'text/vcard;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Jovic-Mejica.vcf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast('Contact card downloaded — open it to save.');
+      });
+
+      /* ---------- 3. Back-to-top button ---------- */
+      const topBtn = document.getElementById('back-to-top');
+      const toggleTopBtn = () => {
+        const show = window.scrollY > 300;
+        topBtn.classList.toggle('opacity-0', !show);
+        topBtn.classList.toggle('translate-y-4', !show);
+        topBtn.classList.toggle('pointer-events-none', !show);
+      };
+      window.addEventListener('scroll', toggleTopBtn, { passive: true });
+      toggleTopBtn();
+
+      topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
+</body>
+</html>
