@@ -112,23 +112,29 @@
     <!-- ================================================= -->
     <!-- SECTION 2: CONTACT INFO                            -->
     <!-- ================================================= -->
-    <section class="reveal mt-10 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2" aria-label="Contact information">
+    <!-- Cards are stacked full-width so the long email address always fits on one line -->
+    <section class="reveal mt-10 space-y-3" aria-label="Contact information">
       <!-- Phone card -->
-      <div class="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400">
+      <div class="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400">
           <i class="fa-solid fa-phone" aria-hidden="true"></i>
         </div>
-        <p class="mt-3 text-xs uppercase tracking-wider text-slate-400">Phone</p>
-        <p class="mt-0.5 text-sm font-medium text-white">09948038429</p>
+        <div class="min-w-0 flex-1 text-left">
+          <p class="text-xs uppercase tracking-wider text-slate-400">Phone</p>
+          <p class="mt-0.5 text-sm font-medium text-white">09948038429</p>
+        </div>
       </div>
 
       <!-- Email card -->
-      <div class="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+      <div class="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur-md">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
           <i class="fa-solid fa-envelope" aria-hidden="true"></i>
         </div>
-        <p class="mt-3 text-xs uppercase tracking-wider text-slate-400">Email Address</p>
-        <p class="mt-0.5 break-all text-sm font-medium text-white">mejicajovic1111@gmail.com</p>
+        <div class="min-w-0 flex-1 text-left">
+          <p class="text-xs uppercase tracking-wider text-slate-400">Email Address</p>
+          <!-- min-w-0 + break-words stops the address from spilling outside the card on tiny screens -->
+          <p class="mt-0.5 break-words text-sm font-medium text-white [overflow-wrap:anywhere]">mejicajovic1111@gmail.com</p>
+        </div>
       </div>
     </section>
 
