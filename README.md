@@ -10,17 +10,18 @@ so only people with push access to the GitHub repo can edit them.
 node scripts/new-client.js        # prints the new key and URL
 ```
 
-1. Edit the new `clients/<key>.json` with the client's details.
-2. Put their photo at `profileClients/<key>.jpg`.
+1. Edit the new `clients/<key>/data.json` with the client's details.
+2. Put their photo in the same folder as `clients/<key>/photo.jpg`.
 3. `git add . && git commit -m "Add client" && git push` and Vercel redeploys.
 4. Write `https://nfcxz.vercel.app/<key>` to the NFC tag.
 
 ## Edit or remove a client
 
-- Edit: change `clients/<key>.json`, then commit and push.
-- Remove: delete `clients/<key>.json`. The link will show "Card not found".
+- Edit: change `clients/<key>/data.json` or `photo.jpg`, then commit and push.
+- Remove: delete the `clients/<key>/` folder. The link will show "Card not found".
 
-`/` (the home page) uses `clients/home.json`.
+Each client has their own folder: `clients/<key>/data.json` + `photo.jpg`.
+`/` (the home page) uses `clients/home/`.
 
 ## JSON fields
 
@@ -31,7 +32,7 @@ All fields are optional except `firstName`. Missing ones are hidden on the page.
 | `firstName`, `middle`, `lastName` | `"Jovic"`, `"S."`, `"Mejica"` |
 | `title` | `"BSIT Student \| Web System Developer"` |
 | `bio` | Short paragraph |
-| `photo`, `photoAlt` | `"/profileClients/abc123.jpg"` |
+| `photo`, `photoAlt` | defaults to `photo.jpg` in the folder; set `"photo.png"` to use another file |
 | `phone` | `"+639948038429"` (used for call/SMS/vCard) |
 | `phoneDisplay` | `"+63 994 803 8429"` (shown on page) |
 | `email`, `emailSubject` | |

@@ -192,7 +192,9 @@
 
       if (!/^[A-Za-z0-9_-]+$/.test(key)) return showNotFound();
 
-      fetch(`/clients/${encodeURIComponent(key)}.json`, { cache: 'no-cache' })
+      // Each client has its own folder: /clients/<key>/data.json + photo.jpg
+      const folder = `/clients/${encodeURIComponent(key)}/`;
+      fetch(`${folder}data.json`, { cache: 'no-cache' })
         .then((r) => { if (!r.ok) throw new Error('not found'); return r.json(); })
         .then(render)
         .catch(showNotFound);
@@ -213,9 +215,11 @@
         document.head.appendChild(meta);
 
         // Hero
-        $('photo').src = c.photo || '';
+        // Photo defaults to photo.jpg in the client's folder
+        const photo = c.photo === '' ? '' : (c.photo || 'photo.jpg');
+        $('photo').src = /^(https?:)?\/|^data:/.test(photo) ? photo : folder + photo;
         $('photo').alt = c.photoAlt || fullName;
-        if (!c.photo) $('photo').onerror();
+        if (!photo) $('photo').onerror();
         $('initials').textContent = ((c.firstName || '')[0] || '') + ((c.lastName || '')[0] || '');
         $('profile-name').textContent = fullName;
         $('profile-title').textContent = c.title || '';

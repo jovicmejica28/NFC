@@ -1,6 +1,9 @@
-// Creates a new client card with a random key.
+// Creates a new client folder with a random key.
 // Usage:  node scripts/new-client.js            -> random 6-char key
 //         node scripts/new-client.js 8          -> random 8-char key
+//
+// Result:  clients/<key>/data.json   (edit the details)
+//          clients/<key>/photo.jpg   (add the photo yourself)
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -8,7 +11,7 @@ const crypto = require('crypto');
 const SITE = 'https://nfcxz.vercel.app';
 const CHARS = 'abcdefghijkmnpqrstuvwxyz23456789'; // no look-alikes (l/1, o/0)
 const length = Math.max(4, parseInt(process.argv[2], 10) || 6);
-const dir = path.join(__dirname, '..', 'clients');
+const clientsDir = path.join(__dirname, '..', 'clients');
 
 function randomKey() {
   let k = '';
@@ -17,7 +20,7 @@ function randomKey() {
 }
 
 let key;
-do { key = randomKey(); } while (fs.existsSync(path.join(dir, `${key}.json`)));
+do { key = randomKey(); } while (fs.existsSync(path.join(clientsDir, key)));
 
 const template = {
   firstName: 'First',
@@ -25,7 +28,6 @@ const template = {
   lastName: 'Last',
   title: 'Job Title | Company',
   bio: 'Short description about the client.',
-  photo: `/profileClients/${key}.jpg`,
   photoAlt: 'Photo of the client',
   phone: '+639000000000',
   phoneDisplay: '+63 900 000 0000',
@@ -37,10 +39,10 @@ const template = {
   ],
 };
 
+const dir = path.join(clientsDir, key);
 fs.mkdirSync(dir, { recursive: true });
-const file = path.join(dir, `${key}.json`);
-fs.writeFileSync(file, JSON.stringify(template, null, 2) + '\n');
+fs.writeFileSync(path.join(dir, 'data.json'), JSON.stringify(template, null, 2) + '\n');
 
-console.log(`Created  clients/${key}.json`);
-console.log(`Photo    profileClients/${key}.jpg  (add this file)`);
+console.log(`Created  clients/${key}/data.json`);
+console.log(`Photo    clients/${key}/photo.jpg  (add this file)`);
 console.log(`URL      ${SITE}/${key}`);

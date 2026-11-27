@@ -1,0 +1,16 @@
+{
+  "firstName": "Joseph Uno",
+  "middle": "",
+  "lastName": "Sarenas",
+  "title": "NFC Solutions Specialist",
+  "bio": "I offer smart NFC products for businesses and individuals, including digital business cards, NFC calling cards, social media sharing, contact sharing, payment access, and customized NFC solutions. My goal is to make connecting, sharing, and everyday transactions faster, easier, and more convenient through technology.",
+  "photoAlt": "Joseph Uno Sarenas",
+  "phone": "+639944625118",
+  "phoneDisplay": "+63 994 462 5118",
+  "email": "uno.sarenas23@gmail.com",
+  "emailSubject": "NFC Inquiry",
+  "socials": [
+    { "type": "facebook", "url": "https://www.facebook.com/share/19iW59mmoE/" },
+    { "type": "instagram", "url": "https://www.instagram.com/uno.rthdx" }
+  ]
+}
