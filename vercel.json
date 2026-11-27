@@ -1,7 +1,6 @@
 {
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/:key([A-Za-z0-9_-]+)", "destination": "/index.html" }
+    { "source": "/:key", "destination": "/index.html" }
   ],
   "headers": [
     {
