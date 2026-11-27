@@ -1,0 +1,12 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/:key([A-Za-z0-9_-]+)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/clients/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    }
+  ]
+}

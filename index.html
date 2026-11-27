@@ -4,9 +4,10 @@
   <!-- ============ META ============ -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Jovic S. Mejica — BSIT Student and Web System Developer. Contact me for web system development, custom websites, and system enhancements." />
   <meta name="theme-color" content="#1C2541" />
-  <title>Jovic S. Mejica | Web System Developer</title>
+  <!-- Client pages are private links: keep them out of search engines -->
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Digital Card</title>
 
   <!-- ============ FONTS (Poppins) ============ -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,7 +24,6 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
-          // Brand palette
           colors: {
             navy: '#1C2541',     // page background
             steel: '#3A506B',    // cards, borders, glows
@@ -36,28 +36,10 @@
 
   <!-- ============ CUSTOM STYLES ============ -->
   <style>
-    /* Scroll-reveal: hidden until JS adds .is-visible */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* TikTok's signature cyan/pink "glitch" look on the icon */
-    .tiktok-icon {
-      text-shadow: -2px -2px 0 #25F4EE, 2px 2px 0 #FE2C55;
-    }
-
-    /* Instagram brand gradient */
-    .bg-instagram {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    }
-
-    /* Respect users who prefer reduced motion */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .tiktok-icon { text-shadow: -2px -2px 0 #25F4EE, 2px 2px 0 #FE2C55; }
+    .bg-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; transform: none; transition: none; }
       * { scroll-behavior: auto !important; }
@@ -67,184 +49,74 @@
 
 <body class="min-h-screen bg-gradient-to-b from-navy to-charcoal bg-fixed font-sans text-slate-100 antialiased">
 
-  <!-- Decorative background glows (purely visual) -->
+  <!-- Decorative background glows -->
   <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
     <div class="absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-steel/50 blur-3xl"></div>
     <div class="absolute bottom-0 -right-20 h-72 w-72 rounded-full bg-steel/30 blur-3xl"></div>
   </div>
 
-  <main class="mx-auto w-full max-w-md px-5 pb-10 pt-12">
+  <!-- Loading state -->
+  <div id="loading" class="flex min-h-screen items-center justify-center">
+    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-cyan-400" aria-hidden="true"></i>
+    <span class="sr-only">Loading…</span>
+  </div>
 
-    <!-- ================================================= -->
-    <!-- SECTION 1: HERO / PROFILE                          -->
-    <!-- ================================================= -->
+  <!-- Not-found state -->
+  <div id="not-found" class="hidden min-h-screen flex-col items-center justify-center px-6 text-center">
+    <i class="fa-solid fa-id-card text-5xl text-slate-400" aria-hidden="true"></i>
+    <h1 class="mt-6 text-2xl font-bold text-white">Card not found</h1>
+    <p class="mt-2 text-sm text-slate-300">This link is invalid or the card has been removed.</p>
+  </div>
+
+  <!-- Card (filled in by the script below from /clients/<key>.json) -->
+  <main id="card" class="mx-auto hidden w-full max-w-md px-5 pb-10 pt-12">
+
+    <!-- SECTION 1: HERO / PROFILE -->
     <section class="reveal text-center" aria-labelledby="profile-name">
-      <!-- Full profile photo (plain, rounded corners, no frame) -->
       <div class="mx-auto w-full">
         <div class="overflow-hidden rounded-3xl shadow-lg shadow-black/30">
-          <!-- Photo shown uncropped (falls back to initials if profile.jpg is missing) -->
-          <img
-            src="profile.jpg"
-            alt="Jovic S. Mejica standing beside a pool table holding a cue"
-            class="block h-auto w-full"
-            width="502" height="504"
-            fetchpriority="high"
-            onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
-          />
-          <span aria-hidden="true" class="hidden flex aspect-square w-full items-center justify-center bg-gradient-to-br from-steel to-navy text-6xl font-semibold text-cyan-300">JM</span>
+          <img id="photo" alt="" class="block h-auto w-full" fetchpriority="high"
+               onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+          <span id="initials" aria-hidden="true" class="hidden flex aspect-square w-full items-center justify-center bg-gradient-to-br from-steel to-navy text-6xl font-semibold text-cyan-300"></span>
         </div>
       </div>
 
-      <h1 id="profile-name" class="mt-6 text-3xl font-bold tracking-tight text-white">Jovic S. Mejica</h1>
-      <p class="mt-1 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-sm font-medium text-transparent">
-        BSIT Student | Web System Developer
-      </p>
-      <p class="mt-4 text-sm leading-relaxed text-slate-300">
-        For web system development inquiries, project proposals, custom website creation, or system enhancements, feel free to contact me. I'm always open to discussing your ideas and helping you find the right digital solution.
-      </p>
+      <h1 id="profile-name" class="mt-6 text-3xl font-bold tracking-tight text-white"></h1>
+      <p id="profile-title" class="mt-1 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-sm font-medium text-transparent"></p>
+      <p id="profile-bio" class="mt-4 text-sm leading-relaxed text-slate-300"></p>
 
-      <!-- Save Contact (vCard download) -->
-      <button
-        id="save-contact"
-        type="button"
-        aria-label="Save Jovic S. Mejica to your contacts"
-        class="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 text-sm font-semibold text-navy shadow-lg shadow-cyan-500/25 transition duration-200 hover:scale-105 hover:shadow-cyan-400/50 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
-      >
+      <button id="save-contact" type="button"
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 text-sm font-semibold text-navy shadow-lg shadow-cyan-500/25 transition duration-200 hover:scale-105 hover:shadow-cyan-400/50 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-navy">
         <i class="fa-solid fa-address-book" aria-hidden="true"></i>
         Save Contact
       </button>
     </section>
 
-    <!-- ================================================= -->
-    <!-- SECTION 2: CONTACT INFO                            -->
-    <!-- ================================================= -->
-    <!-- Cards are stacked full-width so the long email address always fits on one line -->
-    <section class="reveal mt-10 space-y-3" aria-label="Contact information">
-      <!-- Phone card -->
-      <div class="flex items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30">
-        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400">
-          <i class="fa-solid fa-phone" aria-hidden="true"></i>
-        </div>
-        <div class="min-w-0 flex-1 text-left">
-          <p class="text-xs uppercase tracking-wider text-slate-300">Phone</p>
-          <p class="mt-0.5 text-sm font-medium text-white">09948038429</p>
-        </div>
-      </div>
+    <!-- SECTION 2: CONTACT INFO -->
+    <section id="contact-info" class="reveal mt-10 space-y-3" aria-label="Contact information"></section>
 
-      <!-- Email card -->
-      <div class="flex items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30">
-        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-        </div>
-        <div class="min-w-0 flex-1 text-left">
-          <p class="text-xs uppercase tracking-wider text-slate-300">Email Address</p>
-          <!-- min-w-0 + break-words stops the address from spilling outside the card on tiny screens -->
-          <p class="mt-0.5 break-words text-sm font-medium text-white [overflow-wrap:anywhere]">mejicajovic1111@gmail.com</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================================================= -->
-    <!-- SECTION 3: QUICK ACTION BUTTONS                    -->
-    <!-- ================================================= -->
-    <section class="reveal mt-10" aria-labelledby="quick-actions">
+    <!-- SECTION 3: QUICK ACTION BUTTONS -->
+    <section id="actions-section" class="reveal mt-10" aria-labelledby="quick-actions">
       <h2 id="quick-actions" class="mb-4 text-center text-lg font-semibold text-white">Get in touch</h2>
-      <div class="space-y-3">
-        <!-- Call -->
-        <a href="tel:+639948038429"
-           aria-label="Call Jovic at +63 994 803 8429"
-           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30 transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:brightness-110 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
-          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-navy">
-            <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
-          </span>
-          <span class="flex-1">
-            <span class="block font-semibold text-white">Call Me</span>
-            <span class="block text-xs text-slate-300">+63 994 803 8429</span>
-          </span>
-          <i class="fa-solid fa-chevron-right text-slate-400 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
-        </a>
-
-        <!-- SMS -->
-        <a href="sms:+639948038429"
-           aria-label="Send a text message to Jovic"
-           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30 transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:brightness-110 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
-          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-navy">
-            <i class="fa-solid fa-comment-sms" aria-hidden="true"></i>
-          </span>
-          <span class="flex-1">
-            <span class="block font-semibold text-white">Text / SMS</span>
-            <span class="block text-xs text-slate-300">Send me a message</span>
-          </span>
-          <i class="fa-solid fa-chevron-right text-slate-400 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
-        </a>
-
-        <!-- Email -->
-        <a href="mailto:mejicajovic1111@gmail.com?subject=Web%20System%20Inquiry"
-           aria-label="Send an email to Jovic"
-           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30 transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:brightness-110 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
-          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-navy">
-            <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
-          </span>
-          <span class="flex-1">
-            <span class="block font-semibold text-white">Send Email</span>
-            <span class="block text-xs text-slate-300">Web System Inquiry</span>
-          </span>
-          <i class="fa-solid fa-chevron-right text-slate-400 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
-        </a>
-      </div>
+      <div id="actions" class="space-y-3"></div>
     </section>
 
-    <!-- ================================================= -->
-    <!-- SECTION 4: SOCIAL MEDIA LINKS                      -->
-    <!-- ================================================= -->
-    <section class="reveal mt-10" aria-labelledby="connect-heading">
+    <!-- SECTION 4: SOCIAL MEDIA LINKS -->
+    <section id="socials-section" class="reveal mt-10" aria-labelledby="connect-heading">
       <h2 id="connect-heading" class="mb-4 text-center text-lg font-semibold text-white">Connect with me</h2>
-      <div class="space-y-3">
-        <!-- Facebook -->
-        <a href="https://www.facebook.com/jovicmejica28" target="_blank" rel="noopener noreferrer"
-           aria-label="Visit Jovic's Facebook profile (opens in a new tab)"
-           class="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1877F2] p-4 font-semibold text-white shadow-lg shadow-[#1877F2]/20 transition duration-200 hover:scale-[1.02] hover:brightness-110 hover:shadow-[#1877F2]/50 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
-          <i class="fa-brands fa-facebook-f text-lg" aria-hidden="true"></i>
-          Facebook
-        </a>
-
-        <!-- TikTok -->
-        <a href="https://www.tiktok.com/@uqiouu" target="_blank" rel="noopener noreferrer"
-           aria-label="Visit Jovic's TikTok profile (opens in a new tab)"
-           class="flex w-full items-center justify-center gap-3 rounded-2xl border border-white/15 bg-black p-4 font-semibold text-white shadow-lg shadow-black/40 transition duration-200 hover:scale-[1.02] hover:border-[#25F4EE]/60 hover:shadow-[0_0_24px_rgba(254,44,85,0.35)] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25F4EE]">
-          <i class="fa-brands fa-tiktok tiktok-icon text-lg" aria-hidden="true"></i>
-          TikTok
-        </a>
-
-        <!-- Instagram -->
-        <a href="https://www.instagram.com/uqiouu/" target="_blank" rel="noopener noreferrer"
-           aria-label="Visit Jovic's Instagram profile (opens in a new tab)"
-           class="bg-instagram flex w-full items-center justify-center gap-3 rounded-2xl p-4 font-semibold text-white shadow-lg shadow-pink-600/20 transition duration-200 hover:scale-[1.02] hover:brightness-110 hover:shadow-pink-500/50 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
-          <i class="fa-brands fa-instagram text-lg" aria-hidden="true"></i>
-          Instagram
-        </a>
-      </div>
+      <div id="socials" class="space-y-3"></div>
     </section>
 
-    <!-- ================================================= -->
-    <!-- FOOTER                                             -->
-    <!-- ================================================= -->
-    <footer class="mt-12 text-center text-xs text-slate-400">
-      &copy; 2026 Jovic S. Mejica. All rights reserved.
-    </footer>
+    <footer id="footer" class="mt-12 text-center text-xs text-slate-400"></footer>
   </main>
 
-  <!-- Floating back-to-top button (hidden until the user scrolls) -->
-  <button
-    id="back-to-top"
-    type="button"
-    aria-label="Back to top"
-    class="pointer-events-none fixed bottom-5 right-5 flex h-12 w-12 translate-y-4 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-navy opacity-0 shadow-lg shadow-cyan-500/30 transition duration-300 hover:scale-110 hover:shadow-cyan-400/60 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
-  >
+  <!-- Floating back-to-top button -->
+  <button id="back-to-top" type="button" aria-label="Back to top"
+    class="pointer-events-none fixed bottom-5 right-5 flex h-12 w-12 translate-y-4 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-navy opacity-0 shadow-lg shadow-cyan-500/30 transition duration-300 hover:scale-110 hover:shadow-cyan-400/60 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
     <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
   </button>
 
-  <!-- Toast shown after the vCard downloads -->
+  <!-- Toast -->
   <div id="toast" role="status" aria-live="polite"
        class="pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-charcoal/95 px-4 py-2 text-sm text-white opacity-0 shadow-lg backdrop-blur transition duration-300">
   </div>
@@ -252,50 +124,165 @@
   <!-- ============ SCRIPTS ============ -->
   <script>
     (function () {
-      /* ---------- 1. Scroll-reveal animations ---------- */
-      const revealEls = document.querySelectorAll('.reveal');
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target); // animate once
-            }
-          });
-        }, { threshold: 0.12 });
-        revealEls.forEach((el) => observer.observe(el));
-      } else {
-        // Old browsers: just show everything
-        revealEls.forEach((el) => el.classList.add('is-visible'));
-      }
+      const $ = (id) => document.getElementById(id);
 
-      /* ---------- 2. vCard download ("Save Contact") ---------- */
-      const contact = {
-        firstName: 'Jovic',
-        middle: 'S.',
-        lastName: 'Mejica',
-        title: 'BSIT Student | Web System Developer',
-        phone: '+639948038429',
-        email: 'mejicajovic1111@gmail.com',
-        url: 'https://www.facebook.com/jovicmejica28',
+      /* ---------- Escape text before putting it into HTML ---------- */
+      const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
+      // Only allow safe link schemes from the JSON
+      const safeUrl = (u) => /^(https?:|mailto:|tel:|sms:)/i.test(String(u || '')) ? String(u) : '#';
+
+      /* ---------- Social platform styles ---------- */
+      const SOCIALS = {
+        facebook:  { label: 'Facebook',  icon: 'fa-brands fa-facebook-f',  cls: '', style: 'background:#1877F2' },
+        tiktok:    { label: 'TikTok',    icon: 'fa-brands fa-tiktok tiktok-icon', cls: 'border border-white/15', style: 'background:#000' },
+        instagram: { label: 'Instagram', icon: 'fa-brands fa-instagram',   cls: 'bg-instagram', style: '' },
+        linkedin:  { label: 'LinkedIn',  icon: 'fa-brands fa-linkedin-in', cls: '', style: 'background:#0A66C2' },
+        github:    { label: 'GitHub',    icon: 'fa-brands fa-github',      cls: 'border border-white/15', style: 'background:#24292f' },
+        youtube:   { label: 'YouTube',   icon: 'fa-brands fa-youtube',     cls: '', style: 'background:#FF0000' },
+        x:         { label: 'X',         icon: 'fa-brands fa-x-twitter',   cls: 'border border-white/15', style: 'background:#000' },
+        whatsapp:  { label: 'WhatsApp',  icon: 'fa-brands fa-whatsapp',    cls: '', style: 'background:#25D366' },
+        telegram:  { label: 'Telegram',  icon: 'fa-brands fa-telegram',    cls: '', style: 'background:#229ED9' },
+        messenger: { label: 'Messenger', icon: 'fa-brands fa-facebook-messenger', cls: '', style: 'background:#0084FF' },
+        website:   { label: 'Website',   icon: 'fa-solid fa-globe',        cls: 'border border-white/10 bg-steel', style: '' },
       };
 
-      function buildVCard(c) {
-        // vCard 3.0 is the most widely supported format (iOS + Android)
-        return [
-          'BEGIN:VCARD',
-          'VERSION:3.0',
-          `N:${c.lastName};${c.firstName};${c.middle};;`,
-          `FN:${c.firstName} ${c.middle} ${c.lastName}`,
-          `TITLE:${c.title}`,
-          `TEL;TYPE=CELL,VOICE:${c.phone}`,
-          `EMAIL;TYPE=INTERNET:${c.email}`,
-          `URL:${c.url}`,
-          'END:VCARD',
-        ].join('\r\n');
+      const infoCard = (icon, color, label, value) => `
+        <div class="flex items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${color}">
+            <i class="${icon}" aria-hidden="true"></i>
+          </div>
+          <div class="min-w-0 flex-1 text-left">
+            <p class="text-xs uppercase tracking-wider text-slate-300">${esc(label)}</p>
+            <p class="mt-0.5 break-words text-sm font-medium text-white [overflow-wrap:anywhere]">${esc(value)}</p>
+          </div>
+        </div>`;
+
+      const actionBtn = (href, icon, title, sub, aria) => `
+        <a href="${esc(safeUrl(href))}" aria-label="${esc(aria)}"
+           class="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-steel p-4 shadow-lg shadow-black/30 transition duration-200 hover:scale-[1.02] hover:border-cyan-400/50 hover:brightness-110 hover:shadow-cyan-500/20 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 text-lg text-navy">
+            <i class="${icon}" aria-hidden="true"></i>
+          </span>
+          <span class="flex-1">
+            <span class="block font-semibold text-white">${esc(title)}</span>
+            <span class="block text-xs text-slate-300">${esc(sub)}</span>
+          </span>
+          <i class="fa-solid fa-chevron-right text-slate-400 transition group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true"></i>
+        </a>`;
+
+      const socialBtn = (s, firstName) => {
+        const p = SOCIALS[String(s.type || '').toLowerCase()] || SOCIALS.website;
+        const label = s.label || p.label;
+        return `
+        <a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer"
+           aria-label="Visit ${esc(firstName)}'s ${esc(label)} (opens in a new tab)"
+           class="${p.cls} flex w-full items-center justify-center gap-3 rounded-2xl p-4 font-semibold text-white shadow-lg shadow-black/30 transition duration-200 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+           style="${p.style}">
+          <i class="${p.icon} text-lg" aria-hidden="true"></i>
+          ${esc(label)}
+        </a>`;
+      };
+
+      /* ---------- Work out which client to load from the URL ---------- */
+      const path = location.pathname.replace(/^\/+|\/+$/g, '');
+      const key = path === '' || path === 'index' || path === 'index.html' ? 'home' : path;
+
+      if (!/^[A-Za-z0-9_-]+$/.test(key)) return showNotFound();
+
+      fetch(`/clients/${encodeURIComponent(key)}.json`, { cache: 'no-cache' })
+        .then((r) => { if (!r.ok) throw new Error('not found'); return r.json(); })
+        .then(render)
+        .catch(showNotFound);
+
+      function showNotFound() {
+        $('loading').classList.add('hidden');
+        $('not-found').classList.remove('hidden');
+        $('not-found').classList.add('flex');
+        document.title = 'Card not found';
       }
 
-      const toast = document.getElementById('toast');
+      function render(c) {
+        const fullName = [c.firstName, c.middle, c.lastName].filter(Boolean).join(' ');
+        const phoneDisplay = c.phoneDisplay || c.phone;
+
+        document.title = c.title ? `${fullName} | ${c.title}` : fullName;
+        const meta = document.createElement('meta');
+        meta.name = 'description';
+        meta.content = c.bio || fullName;
+        document.head.appendChild(meta);
+
+        // Hero
+        $('photo').src = c.photo || '';
+        $('photo').alt = c.photoAlt || fullName;
+        if (!c.photo) $('photo').onerror();
+        $('initials').textContent = ((c.firstName || '')[0] || '') + ((c.lastName || '')[0] || '');
+        $('profile-name').textContent = fullName;
+        $('profile-title').textContent = c.title || '';
+        $('profile-bio').textContent = c.bio || '';
+        if (!c.bio) $('profile-bio').classList.add('hidden');
+        $('save-contact').setAttribute('aria-label', `Save ${fullName} to your contacts`);
+
+        // Contact info cards
+        let info = '';
+        if (c.phone) info += infoCard('fa-solid fa-phone', 'bg-cyan-400/10 text-cyan-400', 'Phone', phoneDisplay);
+        if (c.email) info += infoCard('fa-solid fa-envelope', 'bg-blue-500/10 text-blue-400', 'Email Address', c.email);
+        $('contact-info').innerHTML = info;
+        if (!info) $('contact-info').classList.add('hidden');
+
+        // Quick actions
+        let actions = '';
+        if (c.phone) {
+          actions += actionBtn(`tel:${c.phone}`, 'fa-solid fa-phone-volume', 'Call Me', phoneDisplay, `Call ${c.firstName} at ${phoneDisplay}`);
+          actions += actionBtn(`sms:${c.phone}`, 'fa-solid fa-comment-sms', 'Text / SMS', 'Send me a message', `Send a text message to ${c.firstName}`);
+        }
+        if (c.email) {
+          const subj = c.emailSubject ? `?subject=${encodeURIComponent(c.emailSubject)}` : '';
+          actions += actionBtn(`mailto:${c.email}${subj}`, 'fa-solid fa-envelope-open-text', 'Send Email', c.emailSubject || c.email, `Send an email to ${c.firstName}`);
+        }
+        $('actions').innerHTML = actions;
+        if (!actions) $('actions-section').classList.add('hidden');
+
+        // Socials
+        const socials = Array.isArray(c.socials) ? c.socials.filter((s) => s && s.url) : [];
+        $('socials').innerHTML = socials.map((s) => socialBtn(s, c.firstName)).join('');
+        if (!socials.length) $('socials-section').classList.add('hidden');
+
+        $('footer').innerHTML = `&copy; ${new Date().getFullYear()} ${esc(fullName)}. All rights reserved.`;
+
+        // vCard download
+        $('save-contact').addEventListener('click', () => {
+          const lines = [
+            'BEGIN:VCARD', 'VERSION:3.0',
+            `N:${c.lastName || ''};${c.firstName || ''};${c.middle || ''};;`,
+            `FN:${fullName}`,
+          ];
+          if (c.title) lines.push(`TITLE:${c.title}`);
+          if (c.phone) lines.push(`TEL;TYPE=CELL,VOICE:${c.phone}`);
+          if (c.email) lines.push(`EMAIL;TYPE=INTERNET:${c.email}`);
+          lines.push(`URL:${location.origin}${location.pathname}`);
+          lines.push('END:VCARD');
+
+          const blob = new Blob([lines.join('\r\n')], { type: 'text/vcard;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${fullName.replace(/[^\w.-]+/g, '-')}.vcf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          showToast('Contact card downloaded — open it to save.');
+        });
+
+        $('loading').classList.add('hidden');
+        $('card').classList.remove('hidden');
+        startReveal();
+      }
+
+      /* ---------- Toast ---------- */
+      const toast = $('toast');
       function showToast(msg) {
         toast.textContent = msg;
         toast.classList.remove('opacity-0');
@@ -303,21 +290,20 @@
         showToast.t = setTimeout(() => toast.classList.add('opacity-0'), 2500);
       }
 
-      document.getElementById('save-contact').addEventListener('click', () => {
-        const blob = new Blob([buildVCard(contact)], { type: 'text/vcard;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Jovic-Mejica.vcf';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        showToast('Contact card downloaded — open it to save.');
-      });
+      /* ---------- Scroll-reveal animations ---------- */
+      function startReveal() {
+        const els = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) return els.forEach((el) => el.classList.add('is-visible'));
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+          });
+        }, { threshold: 0.12 });
+        els.forEach((el) => obs.observe(el));
+      }
 
-      /* ---------- 3. Back-to-top button ---------- */
-      const topBtn = document.getElementById('back-to-top');
+      /* ---------- Back-to-top button ---------- */
+      const topBtn = $('back-to-top');
       const toggleTopBtn = () => {
         const show = window.scrollY > 300;
         topBtn.classList.toggle('opacity-0', !show);
@@ -326,10 +312,7 @@
       };
       window.addEventListener('scroll', toggleTopBtn, { passive: true });
       toggleTopBtn();
-
-      topBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     })();
   </script>
 </body>
